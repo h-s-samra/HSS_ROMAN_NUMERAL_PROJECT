@@ -5,7 +5,8 @@
 //		02/09/2017		HSamra			Initial Commit
 //										Added tests for string verification usign Regex (v1.0A.0045)
 //										One more test needs to be added as soon as string encoding functionality is complete
-//										Addded tests for string encoding functionality (i to str) (v1.0A.0067)
+//										Added tests for string encoding functionality (i to str) (v1.0A.0067)
+//										Added test for comparing file with written roman numerals to master file with roman numeral to verify correct encoding
 //
 // -------------------------------------------------------------
 
@@ -17,6 +18,8 @@
 
 #ifdef TEST_MODE
 
+const char testFile[] = "temp_test.txt";
+const char chckFile[] = "roman_numeral_test.txt";	
 char bfr[8];
 
 void _bfr_init(char *bfr)
@@ -35,8 +38,42 @@ void _regex_verify_str(char *str, byte result)
 	printf("PASS\r\n");
 }
 
+void _regex_verify_str_int(int n, char *str)
+{
+	printf("regex_verify_str_int(%d -> %s): ", n, str);
+	
+	assert(RMN_NMRL_CALC_verify_string(str) == 1);
+	
+	printf("PASS\r\n");
+}
+	
+void _regex_verify_file(void)
+{
+	FILE *f1 = fopen(testFile, "r");
+	FILE *f2 = fopen(chckFile, "r");
+	int fCheck1 = getc(f1); // testFile
+	int fCheck2 = getc(f2); // chckFile
+	
+	printf("regex_verify_file(%d - %d): ", fCheck1, fCheck2);
+	
+	while((fCheck1 != EOF) && (fCheck2 != EOF) && (fCheck1 == fCheck2))
+	{
+		fCheck1 = getc(f1);
+		fCheck2 = getc(f2);
+	}
+	printf("(%d --- %d)", fCheck1, fCheck2); // HSS_Debug
+	
+	assert(fCheck1 == fCheck2);
+	
+	printf("PASS\r\n");
+}
+
 void TEST_RMN_NMRL_CALC_verify(void)
 {
+	FILE *file1;
+	FILE *file2;					 
+	int i = 0;
+	
 	// test edge conditions for each possible character (i, v, x, l, c, d, m)
 	_regex_verify_str("i", PASS);
 	_regex_verify_str("iii", PASS);
@@ -139,6 +176,44 @@ void TEST_RMN_NMRL_CALC_verify(void)
 	_regex_verify_str("cmd", FAIL); // expect fail
 	_regex_verify_str("cmcd", FAIL); // expect fail
 	
+	// test generated roman numeral strings that are written to a file with a master file to verify
+	file1 = fopen(testFile, "a");
+	file2 = fopen(chckFile, "r");
+							 
+	if(file1 == NULL)
+	{
+		printf("\r\nError: Failed to create %s", testFile);
+	}
+	else if(file2 == NULL)
+	{
+		printf("\r\nError: Failed to create %s", chckFile);
+	}
+	
+	for(i = 1; i <= 1000; i++)
+	{
+		char bfr[16];
+		char bfr2[16];
+		
+		_bfr_init(bfr);
+		_bfr_init(bfr2);
+			
+		RMN_NMRL_CALC_encode_int(i, bfr);
+		
+		_regex_verify_str_int(i, bfr);
+		
+		sprintf(bfr2, "%d=%s\n", i, bfr);
+		fputs(bfr2, file1);
+	}
+
+	fclose(file1);
+	fclose(file2);
+	
+	_regex_verify_file();
+							 
+	if(remove(testFile) == 0)
+	{
+		printf("\r\n%s deleted\r\n", testFile);
+	}
 }
 
 // End verification tests
