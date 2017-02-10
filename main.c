@@ -1,16 +1,16 @@
-// --------------- increment_build.sh log ---------------
+// --------------- main.c log ---------------
 //
 //		Date			Initials		Comments
 //		----			--------		--------
 //		02/09/2017		HSamra			Initial Commit
 //										Added build version information to project (v1.0A.0000)
+//										Added TEST_MODE macro to allow developer to enable/disable testing
+//										Added string verification function in TEST_MODE area (v1.0A.0001)
 //
-// ------------------------------------------------------
+// ------------------------------------------
 
-#include <stdio.h>
-#include <string.h>
-
-typedef unsigned char byte;
+#include "common.h"
+#include "test_roman_numeral_calc.h"
 
 const char filename[] = {"bld_num.txt"};
 byte vrsn_mjr = 0x01;	// 1
@@ -46,10 +46,23 @@ byte _read_buildNum(void)
 
 int main(void)
 {
+	// read build number
 	if(!_read_buildNum())
 	{
 		return 0;
 	}
+	
+	// initialize regex
+	if(!RMN_init())
+	{
+		return 0;
+	}
+	
+#ifdef TEST_MODE
+	TEST_RMN_NMRL_CALC_verify();
+#else
+	
+#endif // TEST_MODE
 	
 	return 0;
 }
