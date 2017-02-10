@@ -6,7 +6,7 @@
 //										Added tests for string verification usign Regex (v1.0A.0045)
 //										One more test needs to be added as soon as string encoding functionality is complete
 //										Added tests for string encoding functionality (i to str) (v1.0A.0067)
-//										Added test for comparing file with written roman numerals to master file with roman numeral to verify correct encoding
+//										Added test for comparing file with written roman numerals to master file with roman numeral to verify correct encoding (v1.0A.0071)
 //
 // -------------------------------------------------------------
 
