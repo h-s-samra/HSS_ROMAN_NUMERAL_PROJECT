@@ -12,7 +12,7 @@ CFLAGS = -c
 
 exec_all: all run clean
 
-all: roman_numeral_project
+all: roman_numeral_project increment
 
 roman_numeral_project: main.o
 	$(CC) main.o -o test_exe
@@ -25,7 +25,9 @@ run:
 
 clean:
 	rm -rf *o test_exe
-	
+
+increment:
+	./increment_build.sh
 open:
 	./open_files.sh
 	
