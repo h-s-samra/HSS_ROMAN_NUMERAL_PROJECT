@@ -5,6 +5,7 @@
 //		02/09/2017		HSamra			Initial Commit
 //										Added tests for string verification usign Regex (v1.0A.0045)
 //										One more test needs to be added as soon as string encoding functionality is complete
+//										Addded tests for string encoding functionality (i to str) (v1.0A.0067)
 //
 // -------------------------------------------------------------
 
@@ -13,6 +14,17 @@
 
 #define FAIL 0
 #define PASS 1
+
+#ifdef TEST_MODE
+
+char bfr[8];
+
+void _bfr_init(char *bfr)
+{
+	memset(bfr, 0x00, sizeof(bfr));
+}
+
+// Start verification tests
 
 void _regex_verify_str(char *str, byte result)
 {
@@ -128,3 +140,64 @@ void TEST_RMN_NMRL_CALC_verify(void)
 	_regex_verify_str("cmcd", FAIL); // expect fail
 	
 }
+
+// End verification tests
+
+// Start encoding tests
+
+void _encode_int_to_str(int n, char *str)
+{
+	_bfr_init(bfr);
+	
+	printf("encode_int_to_str(%d->%s): ", n, str);
+	
+	RMN_NMRL_CALC_encode_int(n, bfr);
+	
+	assert(strcmp(bfr, str) == 0); // verify we get what we expected
+	
+	assert(RMN_NMRL_CALC_verify_string(bfr) == 1); // verify our string verification works
+	
+	printf("PASS\r\n");
+}
+
+void TEST_RMN_NMRL_CALC_encode(void)
+{
+	_encode_int_to_str(1, "I");
+	_encode_int_to_str(3, "III");
+
+	_encode_int_to_str(4, "IV");
+	_encode_int_to_str(5, "V");
+	_encode_int_to_str(8, "VIII");
+	
+	_encode_int_to_str(9, "IX");
+	_encode_int_to_str(10, "X");
+	_encode_int_to_str(39, "XXXIX");
+
+	_encode_int_to_str(40, "XL");
+	_encode_int_to_str(49, "XLIX");
+	
+	_encode_int_to_str(50, "L");
+	_encode_int_to_str(89, "LXXXIX");
+	
+	_encode_int_to_str(90, "XC");
+	_encode_int_to_str(99, "XCIX");
+	
+	_encode_int_to_str(100, "C");
+	_encode_int_to_str(399, "CCCXCIX");
+	
+	_encode_int_to_str(400, "CD");
+	_encode_int_to_str(499, "CDXCIX");
+	
+	_encode_int_to_str(500, "D");
+	_encode_int_to_str(899, "DCCCXCIX");
+	
+	_encode_int_to_str(900, "CM");
+	_encode_int_to_str(999, "CMXCIX");
+	
+	_encode_int_to_str(1000, "M");
+	_encode_int_to_str(1999, "MCMXCIX");
+}
+
+// End encoding tests
+
+#endif // TEST_MODE

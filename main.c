@@ -6,6 +6,7 @@
 //										Added build version information to project (v1.0A.0000)
 //										Added TEST_MODE macro to allow developer to enable/disable testing
 //										Added string verification function in TEST_MODE area (v1.0A.0001)
+//										Added integer to roman numeral encoding function in TEST_MODE area (v1.0A.0045)
 //
 // ------------------------------------------
 
@@ -53,13 +54,14 @@ int main(void)
 	}
 	
 	// initialize regex
-	if(!RMN_init())
+	if(!RMN_NMRL_CALC_init())
 	{
 		return 0;
 	}
 	
 #ifdef TEST_MODE
 	TEST_RMN_NMRL_CALC_verify();
+	TEST_RMN_NMRL_CALC_encode();
 #else
 	
 #endif // TEST_MODE
